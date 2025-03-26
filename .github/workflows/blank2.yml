@@ -20,7 +20,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "こんばんは！定期通知です 🌙",
+              "text": "public2です 🌙",
               "blocks": [
                 {
                   "type": "section",
