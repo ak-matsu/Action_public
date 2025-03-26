@@ -1,0 +1,35 @@
+name: Slack Notification
+on:
+  schedule:
+    - cron: '55 14 * * *'  # UTC時間 (日本時間23:55)
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug Information
+        run: |
+          echo "Current Date and Time (UTC)"
+          date -u
+          echo "Current Date and Time (Japan)"
+          TZ='Asia/Tokyo' date
+
+      - name: Send Slack Notification
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "こんばんは！定期通知です 🌙",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "定期ジョブが実行されました。実行時刻: <!date^$(date +%s)^{date_num} {time}|fallback>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
