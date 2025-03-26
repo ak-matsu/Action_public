@@ -1,0 +1,17 @@
+name: Slack Notification
+
+on:
+  schedule:
+    - cron: '30 13 * * *'  # UTC 13:30（日本時間 22:30）
+  workflow_dispatch:  # 手動実行も可能
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack Notification
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: '{"text": "こんばんは！定期通知です 🌙"}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
