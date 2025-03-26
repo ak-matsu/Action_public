@@ -15,7 +15,7 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
-          message: "?? 定期通知: GitHub Pages の更新情報"
+          message: "📢 定期通知: GitHub Pages の更新情報"
           color: "#36a64f"
 
       - name: Extract timestamp
@@ -28,7 +28,7 @@ jobs:
                -H "Content-type: application/json" \
                --data '{
                  "channel": "YOUR_CHANNEL_ID",
-                 "text": "?? 追加情報: 最新の更新内容はこちら。",
+                 "text": "🔄 追加情報: 最新の更新内容はこちら。",
                  "thread_ts": "'$SLACK_TS'"
                }' \
                https://slack.com/api/chat.postMessage
