@@ -1,35 +1,34 @@
-name: Slack Notification
+name: 30min_ts
+
 on:
   schedule:
-    - cron: '55 14 * * *'  # UTC時間 (日本時間23:55)
+    - cron: '*/30 * * * *'  # 30分ごとに実行
   workflow_dispatch:
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Debug Information
-        run: |
-          echo "Current Date and Time (UTC)"
-          date -u
-          echo "Current Date and Time (Japan)"
-          TZ='Asia/Tokyo' date
-
-      - name: Send Slack Notification
-        uses: slackapi/slack-github-action@v1.25.0
-        with:
-          payload: |
-            {
-              "text": "public2です 🌙",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "定期ジョブが実行されました。実行時刻: <!date^$(date +%s)^{date_num} {time}|fallback>"
-                  }
-                }
-              ]
-            }
+      - name: Send main message to Slack
+        id: send_slack_message
+        uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          message: "?? 定期通知: GitHub Pages の更新情報"
+          color: "#36a64f"
+
+      - name: Extract timestamp
+        run: |
+          echo "SLACK_TS=$(jq -r '.ts' <<< '${{ steps.send_slack_message.outputs.response }}')" >> $GITHUB_ENV
+
+      - name: Reply in Thread
+        run: |
+          curl -X POST -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+               -H "Content-type: application/json" \
+               --data '{
+                 "channel": "YOUR_CHANNEL_ID",
+                 "text": "?? 追加情報: 最新の更新内容はこちら。",
+                 "thread_ts": "'$SLACK_TS'"
+               }' \
+               https://slack.com/api/chat.postMessage
