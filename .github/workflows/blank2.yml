@@ -27,7 +27,7 @@ jobs:
           curl -X POST -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
                -H "Content-type: application/json" \
                --data '{
-                 "channel": "YOUR_CHANNEL_ID",
+                 "channel": "CLR0Z1NF9",
                  "text": "🔄 追加情報: 最新の更新内容はこちら。",
                  "thread_ts": "'$SLACK_TS'"
                }' \
