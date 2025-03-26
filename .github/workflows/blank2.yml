@@ -11,12 +11,10 @@ jobs:
     steps:
       - name: Send main message to Slack
         id: send_slack_message
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        with:
-          message: "📢 定期通知: GitHub Pages の更新情報"
-          color: "#36a64f"
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+               --data '{"text":"📢 定期通知: GitHub Pages の更新情報"}' \
+               ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Extract timestamp
         run: |
