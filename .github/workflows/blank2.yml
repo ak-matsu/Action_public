@@ -12,13 +12,17 @@ jobs:
       - name: Send main message to Slack
         id: send_slack_message
         run: |
-          curl -X POST -H 'Content-type: application/json' \
-               --data '{"text":"📢 定期通知: GitHub Pages の更新情報"}' \
-               ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Extract timestamp
-        run: |
-          echo "SLACK_TS=$(jq -r '.ts' <<< '${{ steps.send_slack_message.outputs.response }}')" >> $GITHUB_ENV
+          RESPONSE=$(curl -X POST -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+                          -H "Content-type: application/json" \
+                          --data '{
+                            "channel": "CLR0Z1NF9",
+                            "text": "📢 定期通知: GitHub Pages の更新情報"
+                          }' \
+                          https://slack.com/api/chat.postMessage)
+          
+          SLACK_TS=$(echo "$RESPONSE" | jq -r '.ts')
+          
+          echo "SLACK_TS=$SLACK_TS" >> $GITHUB_ENV
 
       - name: Reply in Thread
         run: |
@@ -27,6 +31,6 @@ jobs:
                --data '{
                  "channel": "CLR0Z1NF9",
                  "text": "🔄 追加情報: 最新の更新内容はこちら。",
-                 "thread_ts": "'$SLACK_TS'"
+                 "thread_ts": "'"$SLACK_TS"'"
                }' \
                https://slack.com/api/chat.postMessage
