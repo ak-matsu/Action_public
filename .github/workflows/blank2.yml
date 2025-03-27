@@ -16,7 +16,7 @@ jobs:
                           -H "Content-type: application/json" \
                           --data '{
                             "channel": "CLR0Z1NF9",
-                            "text": "📢 定期通知: GitHub Pages の更新情報"
+                            "text": "📢 定期通知: スレッド前"
                           }' \
                           https://slack.com/api/chat.postMessage)
           
@@ -30,7 +30,7 @@ jobs:
                -H "Content-type: application/json" \
                --data '{
                  "channel": "CLR0Z1NF9",
-                 "text": "🔄 追加情報: 最新の更新内容はこちら。",
+                 "text": "🔄 追加情報: スレッド後",
                  "thread_ts": "'"$SLACK_TS"'"
                }' \
                https://slack.com/api/chat.postMessage
